@@ -1,26 +1,38 @@
 import axios from "axios"
-import { useState } from "react"
-
+import { useState, useEffect } from "react"
+import { getSession } from 'next-auth/react'
 import { useRouter } from "next/router"
 
 const Signup = () => {
-
-    const [errorMessage, setErrorMessage] = useState(null)
-    const [successMessage, setSuccessMessage] = useState(null)
-
-    const router = useRouter()
 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: ""
     })
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [successMessage, setSuccessMessage] = useState(null)
+
+    const router = useRouter()
+
+    useEffect(() => {
+        getSession().then( session  => {
+            if( session ) {
+                router.replace('/')
+            } else {
+                setLoading(false)
+            }
+        } )
+    }, [router])
+
+    
 
     const signUpUser = async ( event ) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:3000/api/signup', formData)
+            const response = await axios.post('/api/signup', formData)
             setSuccessMessage( response.data.message );
 
             setFormData({
@@ -35,6 +47,18 @@ const Signup = () => {
             setErrorMessage( error.response.data.message );
         }
         
+    }
+
+    if( loading ) {
+        return (
+            <div className='container'>
+                <div className='row'>
+                    <div className='col'>
+                        <p>Loading....</p>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -55,7 +79,6 @@ const Signup = () => {
                     )
                 }
                 <form onSubmit={signUpUser}>
-                    <img className="mb-4" src="https://getbootstrap.com/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57" />
                     <h1 className="h3 mb-3 fw-normal">Please sign up</h1>
 
                     <div className="form-floating">
