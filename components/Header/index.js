@@ -8,7 +8,7 @@ const Header = () => {
             <header className="blog-header py-3">
                 <div className="row flex-nowrap justify-content-between align-items-center">
                 <div className="col-4 pt-1">
-                    <Link href="/profile">
+                    <Link href={"/profile"}>
                         <a className="link-secondary">{ session ? session.user.name : 'Welcome Guest' }</a>
                     </Link>
                 </div>
@@ -25,13 +25,21 @@ const Header = () => {
                     {
                         ( ! session && 'loading' !== status ) && (
                             <>
-                                <Link href="/login">
+                                <Link href={"/login"}>
                                     <a className="btn btn-sm btn-outline-secondary mx-3">Sign in</a>
                                 </Link>
-                                <Link href="/signup">
+                                <Link href={"/signup"}>
                                     <a className="btn btn-sm btn-outline-secondary">Sign up</a>
                                 </Link>
                             </>
+                        )
+                    }
+
+                    {
+                        session && (
+                            <Link href={"/post/create"}>
+                                <a className="btn btn-sm btn-outline-secondary ms-3">Create Post</a>
+                            </Link>
                         )
                     }
 
